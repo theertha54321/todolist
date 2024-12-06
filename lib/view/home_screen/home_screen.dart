@@ -118,28 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            UserAccountsDrawerHeader(
-              accountName: Text("Abdul Aziz Ahwan"),
-              accountEmail: Text("admin@abdulazizahwan"),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "https://images.pexels.com/photos/29273395/pexels-photo-29273395/free-photo-of-rainy-window-view-in-belfast.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"), // Replace with profile image URL
-              ),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
-            // ListTile(
-            //   leading: Icon(Icons.home),
-            //   title: Text("Home"),
-            //   onTap: () {
-            //     // Reset to show all todos
-            //     setState(() {
-            //       selectedCategory = null;
-            //     });
-            //     Navigator.pop(context); // Close the drawer
-            //   },
-            // ),
+            
+            
             ExpansionTile(
               leading: Icon(Icons.category),
               title: Text("Categories"),
