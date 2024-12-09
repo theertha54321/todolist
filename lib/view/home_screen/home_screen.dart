@@ -34,12 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   Color _getDateContainerColor(int index) {
-    // Example logic: cycle through a list of colors based on the index
+    
     List<Color> colors = [Colors.blue, Colors.green, Colors.orange, Colors.red];
     return colors[index % colors.length];
   }
   
-    // Request notification permission
+   
   Future<void> requestNotificationPermission() async {
     final permission = await html.Notification.requestPermission();
     if (permission == 'granted') {
@@ -49,15 +49,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Show a notification on the home screen when the scheduled time arrives
+  
   void showReminderNotification(String title, String body) {
     if (html.Notification.permission == 'granted') {
       html.Notification(title, body: body);
     }
   }
 
-  // Schedule the reminder notification at the selected time
-  void scheduleReminderNotification(String title, String description, DateTime dateTime) {
+  
+  void scheduleReminderNotification(String title, DateTime dateTime) {
     final delay = dateTime.difference(DateTime.now());
 
     if (delay.isNegative) {
@@ -70,12 +70,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     debugPrint('Reminder scheduled for: $dateTime, Delay: $delay');
 
-    // Schedule the reminder notification
+    
     Timer(delay, () {
-      debugPrint('Reminder Timer triggered!');
+      
       showReminderNotification(
         title,
-        "$description at ${DateFormat('yyyy-MM-dd hh:mm a').format(dateTime)}",
+        "${DateFormat('yyyy-MM-dd hh:mm a').format(dateTime)}",
       );
     });
 
@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
   builder: (BuildContext context) {
     return InkWell(
       onTap: () {
-        Scaffold.of(context).openDrawer(); // Use context from Builder
+        Scaffold.of(context).openDrawer(); 
       },
       child: Icon(Icons.menu, color: Colors.white),
     );
@@ -106,10 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
               : "$selectedCategory Todos",
           style: TextStyle(color: Colors.white),
         ),
-
-        
-
-
       ),
       
       
@@ -121,14 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
             
             
             ExpansionTile(
-              leading: Icon(Icons.category),
-              title: Text("Categories"),
+              leading: Icon(Icons.category,color: Colors.black,),
+              title: Text("Categories", style: TextStyle(color: Colors.black),),
               children: [
                 ListTile(
                   title: Text("Personal"),
                   onTap: () {
-                    // Show only Personal todos
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>CategoryScreen(category: "Personal",)));
+                    
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>CategoryScreen(category: "Personal"),));
                     
                   },
                 ),
@@ -153,54 +149,73 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
       body:ListView.builder(
+        
         itemCount: TodolistScreenController.todoList.length,
         itemBuilder: (context,index){
 
-            // Get the todoDate from the database
+           
           final todoDateString = TodolistScreenController.todoList[index]["todoDate"];
           DateTime? date;
 
-          // Try to parse the date, and if the format is incorrect, handle the error
+          
           try {
-            date = DateTime.parse(todoDateString); // Try to parse using ISO format
+            date = DateTime.parse(todoDateString); 
           } catch (e) {
-            // Handle invalid date format (show an error or use a default date)
-            date = DateTime.now(); // Default to current date if the format is invalid
+           
+            date = DateTime.now(); 
           }
 
-          // Format the date for display
-          final formattedDate = DateFormat('dd-EEEE-yyyy').format(date); // Format for display
-          final day = DateFormat('dd').format(date); // Day number
-          final dayName = DateFormat('EEEE').format(date); // Day name
-          final year = DateFormat('yyyy').format(date); // Year
+          
+          final formattedDate = DateFormat('dd-EEEE-yyyy').format(date); 
+          final day = DateFormat('dd').format(date);
+          final dayName = DateFormat('EEEE').format(date); 
+          final year = DateFormat('yyyy').format(date); 
         
        return Padding(
-         padding: const EdgeInsets.all(8.0),
+         padding: const EdgeInsets.all(5.0),
          child: Card(
             elevation: 8,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5)
             ),
             child: ListTile(
+              onTap: () async {
+                final todo = TodolistScreenController.todoList[index];
+    await Navigator.push(
+       context,
+            MaterialPageRoute(
+          builder: (context) => TodolistScreen(
+          onSave: _refreshTodoList,
+          todo: todo,
+           ),
+        ),
+         );
+  
+              },
              
-                title : Row(
+                subtitle : Row(
                   children: [
                     
-                    Text(TodolistScreenController.todoList[index]["title"]),
+                    Text(TodolistScreenController.todoList[index]["title"],style: TextStyle(fontSize: 13,color: Colors.black,fontWeight: FontWeight.w500),),
                     
                   ],
                 ) ,
                 
-                subtitle : Text(TodolistScreenController.todoList[index]["category"]) ,
-                // trailing: Text(TodolistScreenController.todoList[index]["description"]),
+                title : Text(TodolistScreenController.todoList[index]["category"],style: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.bold),) ,
+                trailing: IconButton(
+                  onPressed: () async {
+                    await TodolistScreenController.deleteTodo(id: TodolistScreenController.todoList[index]['id']);
+                    await _refreshTodoList(); 
+                  },
+                  icon:Icon(Icons.delete)),
             
                   
                 leading : Container(
                   
-                width: 90,
+                width: 85,
                 padding: const EdgeInsets.all(3.0),
                 decoration: BoxDecoration(
-                  color: _getDateContainerColor(index), // Background color for the container
+                  color: _getDateContainerColor(index), 
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -214,10 +229,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         side: BorderSide(color: Colors.transparent),
                         fillColor: WidgetStatePropertyAll(Colors.white),
                         
-                          value: _checkboxStates[index], // Set the checkbox state from the list
+                          value: _checkboxStates[index], 
                           onChanged: (bool? newValue) {
                             setState(() {
-                              _checkboxStates[index] = newValue!; // Update the checkbox state
+                              _checkboxStates[index] = newValue!; 
+                               
+                              TodolistScreenController.updateTodo(
+                                id: TodolistScreenController.todoList[index]['id'],
+                                title: TodolistScreenController.todoList[index]['title'],
+                                category: TodolistScreenController.todoList[index]['category'],
+                                todoDate: TodolistScreenController.todoList[index]['todoDate'],
+                                todoTime: TodolistScreenController.todoList[index]['todoTime'],
+                                isCompleted: newValue,
+                              );
                             });
                           },
                         ),
@@ -233,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(
                             fontSize: 8,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white, // Day color
+                            color: Colors.white,
                           ),
                         ),
                         Text(
@@ -241,21 +265,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(
                             fontSize: 8,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white, // Day name color
+                            color: Colors.white,
                           ),
                         ),
                         Text(
                           year,
                           style: const TextStyle(
                             fontSize: 8,
-                            color: Colors.white, // Year color
+                            color: Colors.white, 
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                            ),
+                ),
                              
                   ),
           
@@ -266,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: () async {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>TodolistScreen(onSave: _refreshTodoList,)
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>TodolistScreen(onSave: _refreshTodoList,todo: null,)
         
         )
         );
