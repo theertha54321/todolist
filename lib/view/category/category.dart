@@ -27,6 +27,7 @@ getTodosByCategory() async{
 }
 
 
+
 @override
 void initState()  {
   super.initState();
@@ -34,17 +35,15 @@ void initState()  {
   getTodosByCategory();
   
 }
- 
-
-
 
  @override
 Widget build(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
       leading:IconButton(
-        onPressed: (){
+        onPressed: () async {
           Navigator.pop(context);
+          await TodolistScreenController.getTodo();
         },
         icon:Icon(Icons.arrow_back),color: Colors.white,),
       title: Text("${widget.category} Todos",style: TextStyle(color: Colors.white),),

@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   Color _getDateContainerColor(int index) {
-    
     List<Color> colors = [Colors.blue, Colors.green, Colors.orange, Colors.red];
     return colors[index % colors.length];
   }
@@ -83,6 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
       SnackBar(content: Text('Reminder notification scheduled for $dateTime')),
     );
   }
+
+
+
+  
 
   @override
   Widget build(BuildContext context) {
